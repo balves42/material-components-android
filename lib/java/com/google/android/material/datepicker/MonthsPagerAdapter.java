@@ -41,12 +41,14 @@ class MonthsPagerAdapter extends RecyclerView.Adapter<MonthsPagerAdapter.ViewHol
   private final DateSelector<?> dateSelector;
   private final OnDayClickListener onDayClickListener;
   private final int itemHeight;
+  private String isoCode;
 
   MonthsPagerAdapter(
       @NonNull Context context,
       DateSelector<?> dateSelector,
       @NonNull CalendarConstraints calendarConstraints,
-      OnDayClickListener onDayClickListener) {
+      OnDayClickListener onDayClickListener,
+      String isoCode) {
     Month firstPage = calendarConstraints.getStart();
     Month lastPage = calendarConstraints.getEnd();
     Month currentPage = calendarConstraints.getOpenAt();
@@ -66,6 +68,7 @@ class MonthsPagerAdapter extends RecyclerView.Adapter<MonthsPagerAdapter.ViewHol
     this.calendarConstraints = calendarConstraints;
     this.dateSelector = dateSelector;
     this.onDayClickListener = onDayClickListener;
+    this.isoCode = isoCode;
     setHasStableIds(true);
   }
 
@@ -104,7 +107,14 @@ class MonthsPagerAdapter extends RecyclerView.Adapter<MonthsPagerAdapter.ViewHol
   @Override
   public void onBindViewHolder(@NonNull MonthsPagerAdapter.ViewHolder viewHolder, int position) {
     Month month = calendarConstraints.getStart().monthsLater(position);
-    viewHolder.monthTitle.setText(month.getLongName());
+    String longName;
+    if(isoCode != null){
+      longName = month.getCustomLongName(isoCode);
+    }
+    else{
+      longName = month.getLongName();
+    }
+    viewHolder.monthTitle.setText(longName);
     final MaterialCalendarGridView monthGrid = viewHolder.monthGrid.findViewById(R.id.month_grid);
 
     if (monthGrid.getAdapter() != null && month.equals(monthGrid.getAdapter().month)) {

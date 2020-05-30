@@ -24,6 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /** Contains convenience operations for a month within a specific year. */
 final class Month implements Comparable<Month>, Parcelable {
@@ -183,6 +184,11 @@ final class Month implements Comparable<Month>, Parcelable {
   @NonNull
   String getLongName() {
     return longName;
+  }
+
+  @NonNull
+  String getCustomLongName(String isoCode) {
+    return UtcDates.getCustomYearMonthFormat(new Locale(isoCode)).format(firstOfMonth.getTime());
   }
 
   /* Parcelable interface */

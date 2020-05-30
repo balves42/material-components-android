@@ -48,11 +48,13 @@ class DaysOfWeekAdapter extends BaseAdapter {
 
   private static final int CALENDAR_DAY_STYLE =
       VERSION.SDK_INT >= VERSION_CODES.O ? NARROW_FORMAT : Calendar.SHORT;
+  private Locale locale;
 
-  public DaysOfWeekAdapter() {
+  public DaysOfWeekAdapter(Locale locale) {
     calendar = UtcDates.getUtcCalendar();
     daysInWeek = calendar.getMaximum(Calendar.DAY_OF_WEEK);
     firstDayOfWeek = calendar.getFirstDayOfWeek();
+    this.locale = locale;
   }
 
   @Nullable
@@ -79,19 +81,21 @@ class DaysOfWeekAdapter extends BaseAdapter {
   @SuppressLint("WrongConstant")
   @Override
   public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    //Custom locale added
     TextView dayOfWeek = (TextView) convertView;
     if (convertView == null) {
       LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
       dayOfWeek =
           (TextView) layoutInflater.inflate(R.layout.mtrl_calendar_day_of_week, parent, false);
     }
+
     calendar.set(Calendar.DAY_OF_WEEK, positionToDayOfWeek(position));
     dayOfWeek.setText(
-        calendar.getDisplayName(Calendar.DAY_OF_WEEK, CALENDAR_DAY_STYLE, Locale.getDefault()));
+        calendar.getDisplayName(Calendar.DAY_OF_WEEK, CALENDAR_DAY_STYLE, locale));
     dayOfWeek.setContentDescription(
         String.format(
             parent.getContext().getString(R.string.mtrl_picker_day_of_week_column_header),
-            calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())));
+            calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, locale)));
     return dayOfWeek;
   }
 

@@ -160,6 +160,29 @@ public class RangeDateSelector implements DateSelector<Pair<Long, Long>> {
         dateRangeStrings.second);
   }
 
+  @NonNull
+  @Override
+  public String getCustomSelectionDisplayString(@NonNull Context context,
+                                                @NonNull CharSequence startHeader,
+                                                @NonNull CharSequence endHeader) {
+    Resources res = context.getResources();
+    if (selectedStartItem == null && selectedEndItem == null) {
+      return startHeader + " - " + endHeader;
+    }
+    if (selectedEndItem == null) {
+      return DateStrings.getDateString(selectedStartItem) + " - " + endHeader;
+    }
+    if (selectedStartItem == null) {
+      return startHeader + " - " + DateStrings.getDateString(selectedEndItem);
+    }
+    Pair<String, String> dateRangeStrings =
+        DateStrings.getDateRangeString(selectedStartItem, selectedEndItem);
+    return res.getString(
+        R.string.mtrl_picker_range_header_selected,
+        dateRangeStrings.first,
+        dateRangeStrings.second);
+  }
+
   @Override
   public int getDefaultTitleResId() {
     return R.string.mtrl_picker_range_header_title;

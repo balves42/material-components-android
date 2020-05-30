@@ -57,6 +57,7 @@ import com.google.android.material.shape.MaterialShapeDrawable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 
 /** A {@link Dialog} with a header, {@link MaterialCalendar}, and set of actions. */
 public final class MaterialDatePicker<S> extends DialogFragment {
@@ -66,6 +67,16 @@ public final class MaterialDatePicker<S> extends DialogFragment {
   private static final String CALENDAR_CONSTRAINTS_KEY = "CALENDAR_CONSTRAINTS_KEY";
   private static final String TITLE_TEXT_RES_ID_KEY = "TITLE_TEXT_RES_ID_KEY";
   private static final String TITLE_TEXT_KEY = "TITLE_TEXT_KEY";
+
+  //Custom fields
+  private static final String CONFIRM_BUTTON_TEXT_RES_ID_KEY = "CONFIRM_BUTTON_TEXT_RES_ID_KEY";
+  private static final String CONFIRM_BUTTON_TEXT_KEY = "CONFIRM_BUTTON_TEXT_KEY";
+  private static final String START_HEADER_TEXT_RES_ID_KEY = "START_HEADER_TEXT_RES_ID_KEY";
+  private static final String START_HEADER_TEXT_KEY = "START_HEADER_TEXT_KEY";
+  private static final String END_HEADER_TEXT_RES_ID_KEY = "END_HEADER_TEXT_RES_ID_KEY";
+  private static final String END_HEADER_TEXT_KEY = "END_HEADER_TEXT_KEY";
+  private static final String ISOCODE_KEY = "ISOCODE_KEY";
+
   private static final String INPUT_MODE_KEY = "INPUT_MODE_KEY";
 
   static final Object CONFIRM_BUTTON_TAG = "CONFIRM_BUTTON_TAG";
@@ -102,7 +113,12 @@ public final class MaterialDatePicker<S> extends DialogFragment {
    * <p>The text is updated when the Dialog launches and on user clicks.
    */
   public String getHeaderText() {
-    return dateSelector.getSelectionDisplayString(getContext());
+    if (startHeaderText != null && endHeaderText != null) {
+      return dateSelector.getCustomSelectionDisplayString(getContext(), startHeaderText, endHeaderText);
+    }
+    else{
+      return dateSelector.getSelectionDisplayString(getContext());
+    }
   }
 
   private final LinkedHashSet<MaterialPickerOnPositiveButtonClickListener<? super S>>
@@ -121,6 +137,16 @@ public final class MaterialDatePicker<S> extends DialogFragment {
   private MaterialCalendar<S> calendar;
   @StringRes private int titleTextResId;
   private CharSequence titleText;
+
+  //Custom fields
+  @StringRes private int confirmButtonTextResId;
+  private CharSequence confirmButtonText;
+  @StringRes private int startHeaderTextResId;
+  private CharSequence startHeaderText;
+  @StringRes private int endHeaderTextResId;
+  private CharSequence endHeaderText;
+  private String isoCode;
+
   private boolean fullscreen;
   @InputMode private int inputMode;
 
@@ -138,6 +164,16 @@ public final class MaterialDatePicker<S> extends DialogFragment {
     args.putParcelable(CALENDAR_CONSTRAINTS_KEY, options.calendarConstraints);
     args.putInt(TITLE_TEXT_RES_ID_KEY, options.titleTextResId);
     args.putCharSequence(TITLE_TEXT_KEY, options.titleText);
+
+    //Custom fields added
+    args.putInt(CONFIRM_BUTTON_TEXT_RES_ID_KEY, options.confirmButtonTextResId);
+    args.putCharSequence(CONFIRM_BUTTON_TEXT_KEY, options.confirmButtonText);
+    args.putInt(START_HEADER_TEXT_RES_ID_KEY, options.startHeaderTextResId);
+    args.putCharSequence(START_HEADER_TEXT_KEY, options.startHeaderText);
+    args.putInt(END_HEADER_TEXT_RES_ID_KEY, options.endHeaderTextResId);
+    args.putCharSequence(END_HEADER_TEXT_KEY, options.endHeaderText);
+    args.putCharSequence(ISOCODE_KEY, options.isoCode);
+
     args.putInt(INPUT_MODE_KEY, options.inputMode);
     materialDatePickerDialogFragment.setArguments(args);
     return materialDatePickerDialogFragment;
@@ -157,6 +193,15 @@ public final class MaterialDatePicker<S> extends DialogFragment {
     bundle.putParcelable(CALENDAR_CONSTRAINTS_KEY, constraintsBuilder.build());
     bundle.putInt(TITLE_TEXT_RES_ID_KEY, titleTextResId);
     bundle.putCharSequence(TITLE_TEXT_KEY, titleText);
+
+    //Custom fields added
+    bundle.putInt(CONFIRM_BUTTON_TEXT_RES_ID_KEY, confirmButtonTextResId);
+    bundle.putCharSequence(CONFIRM_BUTTON_TEXT_KEY, confirmButtonText);
+    bundle.putInt(START_HEADER_TEXT_RES_ID_KEY, startHeaderTextResId);
+    bundle.putCharSequence(START_HEADER_TEXT_KEY, startHeaderText);
+    bundle.putInt(END_HEADER_TEXT_RES_ID_KEY, endHeaderTextResId);
+    bundle.putCharSequence(END_HEADER_TEXT_KEY, endHeaderText);
+    bundle.putCharSequence(ISOCODE_KEY, isoCode);
   }
 
   @Override
@@ -168,6 +213,16 @@ public final class MaterialDatePicker<S> extends DialogFragment {
     calendarConstraints = activeBundle.getParcelable(CALENDAR_CONSTRAINTS_KEY);
     titleTextResId = activeBundle.getInt(TITLE_TEXT_RES_ID_KEY);
     titleText = activeBundle.getCharSequence(TITLE_TEXT_KEY);
+
+    //Custom fields added
+    confirmButtonTextResId = activeBundle.getInt(CONFIRM_BUTTON_TEXT_RES_ID_KEY);
+    confirmButtonText = activeBundle.getCharSequence(CONFIRM_BUTTON_TEXT_KEY);
+    startHeaderTextResId = activeBundle.getInt(START_HEADER_TEXT_RES_ID_KEY);
+    startHeaderText = activeBundle.getCharSequence(START_HEADER_TEXT_KEY);
+    endHeaderTextResId = activeBundle.getInt(END_HEADER_TEXT_RES_ID_KEY);
+    endHeaderText = activeBundle.getCharSequence(END_HEADER_TEXT_KEY);
+    isoCode = activeBundle.getString(ISOCODE_KEY);
+
     inputMode = activeBundle.getInt(INPUT_MODE_KEY);
   }
 
@@ -234,6 +289,11 @@ public final class MaterialDatePicker<S> extends DialogFragment {
     initHeaderToggle(context);
 
     confirmButton = root.findViewById(R.id.confirm_button);
+    //Custom fields added
+    if (confirmButtonText != null) {
+      confirmButton.setText(confirmButtonText);
+    }
+
     if (dateSelector.isSelectionComplete()) {
       confirmButton.setEnabled(true);
     } else {
@@ -333,7 +393,7 @@ public final class MaterialDatePicker<S> extends DialogFragment {
   private void startPickerFragment() {
     calendar =
         MaterialCalendar.newInstance(
-            dateSelector, getThemeResId(requireContext()), calendarConstraints);
+            dateSelector, getThemeResId(requireContext()), calendarConstraints, isoCode);
     pickerFragment =
         headerToggleButton.isChecked()
             ? MaterialTextInputPicker.newInstance(dateSelector, calendarConstraints)
@@ -532,6 +592,16 @@ public final class MaterialDatePicker<S> extends DialogFragment {
     CalendarConstraints calendarConstraints;
     int titleTextResId = 0;
     CharSequence titleText = null;
+
+    //Custom fields added
+    int confirmButtonTextResId = 0;
+    CharSequence confirmButtonText = null;
+    int startHeaderTextResId = 0;
+    CharSequence startHeaderText = null;
+    int endHeaderTextResId = 0;
+    CharSequence endHeaderText = null;
+    CharSequence isoCode = Locale.getDefault().toString();
+
     @Nullable S selection = null;
     @InputMode int inputMode = INPUT_MODE_CALENDAR;
 
@@ -610,7 +680,29 @@ public final class MaterialDatePicker<S> extends DialogFragment {
       return this;
     }
 
-    /** Sets the input mode to start with. */
+    @NonNull
+    public Builder<S> setConfirmButtonText(@Nullable CharSequence charSequence) {
+      this.confirmButtonText = charSequence;
+      this.confirmButtonTextResId = 0;
+      return this;
+    }
+
+    @NonNull
+    public Builder<S> setHeaderText(@Nullable CharSequence charSequenceStart,
+                                    @Nullable CharSequence charSequenceEnd) {
+      this.startHeaderText = charSequenceStart;
+      this.startHeaderTextResId = 0;
+      this.endHeaderText = charSequenceEnd;
+      this.endHeaderTextResId = 0;
+      return this;
+    }
+
+    @NonNull
+    public Builder<S> setLocale(@Nullable CharSequence isoCode) {
+      this.isoCode = isoCode;
+      return this;
+    }
+
     @NonNull
     public Builder<S> setInputMode(@InputMode int inputMode) {
       this.inputMode = inputMode;

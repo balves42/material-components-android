@@ -88,6 +88,9 @@ public interface DateSelector<S> extends Parcelable {
   @NonNull
   String getSelectionDisplayString(Context context);
 
+  @NonNull
+  String getCustomSelectionDisplayString(Context context, CharSequence customStart, CharSequence customEnd);
+
   @StringRes
   int getDefaultTitleResId();
 

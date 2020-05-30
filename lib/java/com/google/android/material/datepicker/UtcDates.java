@@ -226,6 +226,10 @@ class UtcDates {
     return getYearMonthFormat(Locale.getDefault());
   }
 
+  static SimpleDateFormat getCustomYearMonthFormat(Locale customLocale) {
+    return getYearMonthFormat(customLocale);
+  }
+
   private static SimpleDateFormat getYearMonthFormat(Locale locale) {
     return getSimpleFormat("LLLL, yyyy", locale);
   }

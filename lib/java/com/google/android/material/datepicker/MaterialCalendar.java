@@ -48,6 +48,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.GridView;
 import com.google.android.material.button.MaterialButton;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Fragment for a days of week {@link Calendar} represented as a header row of days labels and
@@ -68,6 +69,7 @@ public final class MaterialCalendar<S> extends PickerFragment<S> {
   private static final String GRID_SELECTOR_KEY = "GRID_SELECTOR_KEY";
   private static final String CALENDAR_CONSTRAINTS_KEY = "CALENDAR_CONSTRAINTS_KEY";
   private static final String CURRENT_MONTH_KEY = "CURRENT_MONTH_KEY";
+  private static final String ISOCODE_KEY = "ISOCODE_KEY";
   private static final int SMOOTH_SCROLL_MAX = 3;
 
   @VisibleForTesting static final Object MONTHS_VIEW_GROUP_TAG = "MONTHS_VIEW_GROUP_TAG";
@@ -88,18 +90,21 @@ public final class MaterialCalendar<S> extends PickerFragment<S> {
   private RecyclerView recyclerView;
   private View yearFrame;
   private View dayFrame;
+  private String isoCode;
 
   @NonNull
   static <T> MaterialCalendar<T> newInstance(
       DateSelector<T> dateSelector,
       int themeResId,
-      @NonNull CalendarConstraints calendarConstraints) {
+      @NonNull CalendarConstraints calendarConstraints,
+      String isoCode) {
     MaterialCalendar<T> materialCalendar = new MaterialCalendar<>();
     Bundle args = new Bundle();
     args.putInt(THEME_RES_ID_KEY, themeResId);
     args.putParcelable(GRID_SELECTOR_KEY, dateSelector);
     args.putParcelable(CALENDAR_CONSTRAINTS_KEY, calendarConstraints);
     args.putParcelable(CURRENT_MONTH_KEY, calendarConstraints.getOpenAt());
+    args.putString(ISOCODE_KEY, isoCode);
     materialCalendar.setArguments(args);
     return materialCalendar;
   }
@@ -121,6 +126,7 @@ public final class MaterialCalendar<S> extends PickerFragment<S> {
     dateSelector = activeBundle.getParcelable(GRID_SELECTOR_KEY);
     calendarConstraints = activeBundle.getParcelable(CALENDAR_CONSTRAINTS_KEY);
     current = activeBundle.getParcelable(CURRENT_MONTH_KEY);
+    isoCode = activeBundle.getString(ISOCODE_KEY);
   }
 
   @NonNull
@@ -158,7 +164,7 @@ public final class MaterialCalendar<S> extends PickerFragment<S> {
             accessibilityNodeInfoCompat.setCollectionInfo(null);
           }
         });
-    daysHeader.setAdapter(new DaysOfWeekAdapter());
+    daysHeader.setAdapter(new DaysOfWeekAdapter(new Locale(isoCode)));
     daysHeader.setNumColumns(earliestMonth.daysInWeek);
     daysHeader.setEnabled(false);
 
@@ -201,7 +207,8 @@ public final class MaterialCalendar<S> extends PickerFragment<S> {
                   }
                 }
               }
-            });
+            },
+            isoCode);
     recyclerView.setAdapter(monthsPagerAdapter);
 
     int columns =

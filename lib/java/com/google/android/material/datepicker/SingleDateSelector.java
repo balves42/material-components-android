@@ -154,6 +154,15 @@ public class SingleDateSelector implements DateSelector<Long> {
     return res.getString(R.string.mtrl_picker_date_header_selected, startString);
   }
 
+  @NonNull
+  @Override
+  public String getCustomSelectionDisplayString(Context context,
+                                                CharSequence customStart,
+                                                CharSequence customEnd) {
+    //TODO: Not implemented yet
+    return null;
+  }
+
   @Override
   public int getDefaultTitleResId() {
     return R.string.mtrl_picker_date_header_title;

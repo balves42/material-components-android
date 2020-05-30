@@ -23,6 +23,8 @@ import android.content.Context;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.test.core.app.ApplicationProvider;
 import java.util.Calendar;
+import java.util.Locale;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -62,7 +64,7 @@ public class MonthsPagerAdapterTest {
                 .setEnd(april2016.timeInMillis)
                 .setOpenAt(march2016.timeInMillis)
                 .build(),
-            /* onDayClickListener= */ null);
+            /* onDayClickListener= */ null, Locale.getDefault().toString());
     assertEquals(3, monthsAdapter.getItemCount());
     assertEquals(1, monthsAdapter.getPosition(march2016));
   }
@@ -78,7 +80,7 @@ public class MonthsPagerAdapterTest {
                 .setEnd(feb2016.timeInMillis)
                 .setOpenAt(feb2016.timeInMillis)
                 .build(),
-            /* onDayClickListener= */ null);
+            /* onDayClickListener= */ null, Locale.getDefault().toString());
     assertEquals(1, monthsAdapter.getItemCount());
     assertEquals(0, monthsAdapter.getPosition(feb2016));
   }
@@ -96,7 +98,7 @@ public class MonthsPagerAdapterTest {
             .setEnd(march2016.timeInMillis)
             .setOpenAt(april2016.timeInMillis)
             .build(),
-        /* onDayClickListener= */ null);
+        /* onDayClickListener= */ null, Locale.getDefault().toString());
   }
 
   @Test
@@ -110,7 +112,7 @@ public class MonthsPagerAdapterTest {
             .setEnd(feb2016.timeInMillis)
             .setOpenAt(march2016.timeInMillis)
             .build(),
-        /* onDayClickListener= */ null);
+        /* onDayClickListener= */ null, Locale.getDefault().toString());
   }
 
   @Test
@@ -124,7 +126,7 @@ public class MonthsPagerAdapterTest {
                 .setEnd(april2016.timeInMillis)
                 .setOpenAt(march2016.timeInMillis)
                 .build(),
-            /* onDayClickListener= */ null);
+            /* onDayClickListener= */ null, Locale.getDefault().toString());
     assertEquals(feb2016.getLongName(), monthsAdapter.getPageTitle(/* position= */ 0).toString());
     assertEquals(march2016.getLongName(), monthsAdapter.getPageTitle(/* position= */ 1).toString());
     assertEquals(april2016.getLongName(), monthsAdapter.getPageTitle(/* position= */ 2).toString());
