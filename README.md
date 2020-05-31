@@ -4,7 +4,7 @@ A fork of the Material Components for Android which intends to guarantee that a 
 
 ## Added features
 
-<img src="https://imgur.com/SPFO3Sh.jpg" title="source: imgur.com" /></a>
+<img src="https://imgur.com/SPFO3Sh.jpg" title="Custom fields added" /></a>
 
 1. Confirm button
 2. Title (already existed)
