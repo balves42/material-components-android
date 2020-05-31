@@ -42,6 +42,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.core.util.Pair;
 import androidx.core.view.ViewCompat;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.lifecycle.MutableLiveData;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -132,6 +134,7 @@ public final class MaterialDatePicker<S> extends DialogFragment {
 
   @StyleRes private int overrideThemeResId;
   @Nullable private DateSelector<S> dateSelector;
+  private MutableLiveData<androidx.core.util.Pair<Long, Long>> dateSelectorLive = new MutableLiveData<>();
   private PickerFragment<S> pickerFragment;
   @Nullable private CalendarConstraints calendarConstraints;
   private MaterialCalendar<S> calendar;
@@ -383,6 +386,10 @@ public final class MaterialDatePicker<S> extends DialogFragment {
     return dateSelector.getSelection();
   }
 
+  public final MutableLiveData<androidx.core.util.Pair<Long, Long>> getSelectionLive(){
+    return dateSelectorLive;
+  }
+
   private void updateHeader() {
     String headerText = getHeaderText();
     headerSelectionText.setContentDescription(
@@ -408,6 +415,7 @@ public final class MaterialDatePicker<S> extends DialogFragment {
         new OnSelectionChangedListener<S>() {
           @Override
           public void onSelectionChanged(S selection) {
+            updateRangeLiveData(selection);
             updateHeader();
             confirmButton.setEnabled(dateSelector.isSelectionComplete());
           }
@@ -417,6 +425,23 @@ public final class MaterialDatePicker<S> extends DialogFragment {
             confirmButton.setEnabled(false);
           }
         });
+  }
+
+  private void updateRangeLiveData(S selection){
+    try{
+      if(selection instanceof androidx.core.util.Pair){
+        Object first = ((androidx.core.util.Pair) selection).first;
+        Object second = ((androidx.core.util.Pair) selection).second;
+        if(first instanceof Long && second instanceof Long){
+          Long firstCasted = (Long) first;
+          Long secondCasted = (Long) second;
+          Pair<Long, Long> casted = new Pair<>(firstCasted, secondCasted);
+          dateSelectorLive.postValue(casted);
+        }
+      }
+    }catch(Exception e){
+      Log.e("MaterialDatePicker", "Error updating live data!");
+    }
   }
 
   private void initHeaderToggle(Context context) {
