@@ -14,7 +14,7 @@ A fork of the Material Components for Android which intends to guarantee that a 
 
 ## Usage
 
-For example, when building the MaterialDatePicker:
+For example, when building the date range picker:
 ~~~~~
 val builder = MaterialDatePicker.Builder.dateRangePicker()
 builder.setTitleText("Titulo")
