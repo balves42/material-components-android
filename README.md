@@ -1,47 +1,35 @@
-[![Build Status](https://img.shields.io/travis/material-components/material-components-android/master.svg)](https://travis-ci.org/material-components/material-components-android/)
-[![Chat](https://img.shields.io/discord/259087343246508035.svg)](https://discord.gg/material-components)
+# Material Components for Android (+ Date Range Custom fields)
 
-# Material Components for Android
+A fork of the Material Components for Android which intends to guarantee that a custom locale and more custom text can be provided.
 
-Material Components for Android (MDC-Android) help developers execute
-[Material Design](https://www.material.io). Developed by a core team of
-engineers and UX designers at Google, these components enable a reliable
-development workflow to build beautiful and functional Android apps.
+## Added features
 
-Material Components for Android is a drop-in replacement for Android's
-Design Support Library.
+<img src="https://imgur.com/SPFO3Sh.jpg" title="source: imgur.com" /></a>
 
-## Getting Started
+1. Confirm button
+2. Title (already existed)
+3. Header
+4. "Month, year" and "Days of the week"
+    * Generated with the given locale or default
 
-For information on how to get started with Material Components for Android,
-take a look at our [Getting Started](docs/getting-started.md) guide.
+## Usage
 
-## Submitting Bugs or Feature Requests
+For example, when building the MaterialDatePicker:
+~~~~~
+val builder = MaterialDatePicker.Builder.dateRangePicker()
+builder.setTitleText("Titulo")
+builder.setHeaderText("Inicio", "Fim")
+builder.setConfirmText("Botao")
+builder.setLocale("pt")
+~~~~~
 
-For usage questions: ask on
-[Stack  Overflow](http://stackoverflow.com/questions/tagged/material-components).
+And then simply call it:
+~~~~~~
+val materialDatePicker = builder.build()
+materialDatePicker.show(fragmentManager, materialDatePicker.string)
+~~~~~~
 
-Bugs or feature requests should be submitted at our [GitHub Issues section](https://github.com/material-components/material-components-android/issues).
+[Don't forget to look for other ISO codes and add them to the locale](http://www.lingoes.net/en/translator/langcode.htm)
 
-## Useful Links
-- [All Components](https://github.com/material-components/material-components-android/tree/master/lib/)
-- [Getting Started](docs/getting-started.md)
-- [Contributing](docs/contributing.md)
-- [Building From Source](docs/building-from-source.md)
-- [Catalog App](docs/catalog-app.md)
-- [Class
-  documentation](https://developer.android.com/reference/com/google/android/material/classes)
-  (external site)
-- [MDC-Android on Stack
-  Overflow](https://www.stackoverflow.com/questions/tagged/material-components+android)
-  (external site)
-- [Android Developer’s
-  Guide](https://developer.android.com/training/material/index.html)
-  (external site)
-- [Material.io](https://www.material.io) (external site)
-- [Material Design Guidelines](https://material.google.com) (external site)
-
-## Documentation
-
-*   [Directory structure](docs/directorystructure.md)
-*   [Components](docs/components/)
+## Limitations
+Only tested for the Date Range Picker. Feel free to report any bugs detected to other components.
