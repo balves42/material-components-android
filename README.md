@@ -50,7 +50,7 @@ mMaterialDatePicker?.selectionLive.observe(lifecycleOwner, Observer { pair ->
 })
 ~~~~~
 
-[Don't forget to look for other ISO codes and add them to the locale](http://www.lingoes.net/en/translator/langcode.htm)
+[Don't forget to look for the ISO codes when you want to provide a custom locale](http://www.lingoes.net/en/translator/langcode.htm)
 
 ## Limitations
 Only tested for the Date Range Picker. Feel free to report any bugs detected to other components.
